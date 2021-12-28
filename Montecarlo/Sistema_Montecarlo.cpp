@@ -44,7 +44,6 @@ void Sistema_MC::metropolis()
 	if (deltaE < 0 || this->double_distribution(this->generator) <= (exp(-deltaE / this->T)))
 	{
 		//Se admite
-
 		this->Ep +=deltaE;
 		this->dphi += delta_dphi;
 		this->d2phi += delta_d2phi;
