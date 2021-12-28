@@ -1,3 +1,3 @@
 500 0.5 10 5
 1.353113
-estabilizado.bin
+../estabilizado.bin

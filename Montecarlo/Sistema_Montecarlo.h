@@ -2,8 +2,9 @@
 #include "potenciales.h"
 #include "progress_bar.h"//igual no se puede usar esto en este proyecto si uso cuda
 #include <random>
-#include <ofstream>
-#include <ifstream>
+#include <ostream>//por algun motivo tienen nombres distintos aqui????
+#include <istream>
+#include <string>
 
 class Sistema_MC
 {
@@ -17,9 +18,9 @@ public:
 	std::uniform_int_distribution<int> int_distribution;
 	std::uniform_real_distribution<double> double_distribution;
 
-	void metropolis(int N_steps, std::string binary_name, std::string energy_name, std::string barname);
+	void metropolis(int N_steps, std::string energy_name, std::string barname, std::string results_name);
 
-	Sistema_MC(int N, double T, double V, double rc);//no se si necesito mas variables
+	Sistema_MC(std::string filename);
 	~Sistema_MC();
 
 private:

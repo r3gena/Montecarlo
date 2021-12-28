@@ -1,0 +1,4 @@
+/home/pedro/github/Montecarlo/Montecarlo/build/CMakeFiles/rebuild_cache.dir
+/home/pedro/github/Montecarlo/Montecarlo/build/CMakeFiles/app.dir
+/home/pedro/github/Montecarlo/Montecarlo/build/CMakeFiles/edit_cache.dir
+/home/pedro/github/Montecarlo/Montecarlo/build/CMakeFiles/applib.dir

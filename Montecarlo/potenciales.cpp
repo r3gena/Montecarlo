@@ -6,7 +6,7 @@ void lennard_jones(const int N, const float rc, const float rc2, const float L, 
 	*E_p = 0;
 	*dphi = 0;
 	*d2phi = 0;
-	
+
 	double rijx, rijy, rijz, rij2, rij6, inv_rij6, inv_rij12, fmod, ep_corr, dphi_corr, d2phi_corr;
 
 	//primero nos aseguramos de que las aceleraciones estan a 0
@@ -70,7 +70,7 @@ void lennard_jones(const int N, const float rc, const float rc2, const float L, 
 	dphi_corr = 16 * f * (-2. / (3 * pow(rc, 6)) + 1);
 	d2phi_corr = 16 * f * (26. / (3 * pow(rc, 6)) - 7);
 
-	//añadimos las correcciones  y las operaciones finales para el calculo de las derivadas de phi
+	//aï¿½adimos las correcciones  y las operaciones finales para el calculo de las derivadas de phi
 	*E_p = *E_p * 4 + ep_corr;
 	*dphi = *dphi * 24 + dphi_corr;
 	*d2phi = *d2phi * 24 + d2phi_corr;
@@ -78,7 +78,7 @@ void lennard_jones(const int N, const float rc, const float rc2, const float L, 
 	*dphi = *dphi / (3 * V);
 }
 
-//definimos la función de lennard jones para montecarlo
+//definimos la funciï¿½n de lennard jones para montecarlo
 void lennard_jones(const int N, const float rc, const float rc2, const float L, const float V, double* E_p, double* dphi, double* d2phi, const double rx[], const double ry[], const double rz[])
 {
 	*E_p = 0;
@@ -124,7 +124,7 @@ void lennard_jones(const int N, const float rc, const float rc2, const float L, 
 	dphi_corr = 16 * f * (-2. / (3 * pow(rc, 6)) + 1);
 	d2phi_corr = 16 * f * (26. / (3 * pow(rc, 6)) - 7);
 
-	//añadimos las correcciones  y las operaciones finales para el calculo de las derivadas de phi
+	//aï¿½adimos las correcciones  y las operaciones finales para el calculo de las derivadas de phi
 	*E_p = *E_p * 4 + ep_corr;
 	*dphi = *dphi * 24 + dphi_corr;
 	*d2phi = *d2phi * 24 + d2phi_corr;
@@ -136,6 +136,8 @@ void lennard_jones(const int N, const float rc, const float rc2, const float L, 
 void LJ_particula(const int N, const int n, const float rc, const float rc2, const float L, const float V, double* E_p, double* dphi, double* d2phi, const double rx[], const double ry[], const double rz[])
 {
 	*E_p = 0;
+	*dphi=0;
+	*d2phi=0;
 
 	double rijx, rijy, rijz, rij2, rij6, inv_rij6, inv_rij12;
 
@@ -166,7 +168,7 @@ void LJ_particula(const int N, const int n, const float rc, const float rc2, con
 			*d2phi = *d2phi + (26 * inv_rij12 - 7 * inv_rij6);
 		}
 	}
-	for (int i = n; i < N; i++)
+	for (int i = n + 1; i < N; i++)
 	{
 		//primero calculamos la distancia entre particulas para ver si estan dentro del radio de corte
 		rijx = rx[n] - rx[i];
@@ -193,4 +195,9 @@ void LJ_particula(const int N, const int n, const float rc, const float rc2, con
 			*d2phi = *d2phi + (26 * inv_rij12 - 7 * inv_rij6);
 		}
 	}
+	*E_p = *E_p * 4 ;
+	*dphi = *dphi * 24 ;
+	*d2phi = *d2phi * 24 ;
+	*d2phi = (*d2phi - *dphi * 2) / (9 * V * V);
+	*dphi = *dphi / (3 * V);
 }

@@ -14,7 +14,7 @@ progress_bar::progress_bar(std::string name, int max_steps)
 progress_bar::~progress_bar()
 {
 	std::cout << "[" << std::string(100, '#') << ']' << "\r";
-	std::cout.flush();
+	std::cout << std::flush;
 	std::cout << "\n" << "\n";
 }
 
