@@ -2,6 +2,8 @@
 #include "potenciales.h"
 #include "progress_bar.h"//igual no se puede usar esto en este proyecto si uso cuda
 #include <random>
+#include <ofstream>
+#include <ifstream>
 
 class Sistema_MC
 {
