@@ -10,14 +10,14 @@ class Sistema_MC
 public:
 	int N;
 	double Ep, dphi, d2phi, T;
-	double rc, rc2, L, V;
+	double rc, rc2, L, V, rho;
 
 	//elementos para los numeros aleatorios
 	std::default_random_engine generator;
 	std::uniform_int_distribution<int> int_distribution;
 	std::uniform_real_distribution<double> double_distribution;
 
-	void metropolis();
+	void metropolis(int N_steps, std::string binary_name, std::string energy_name, std::string barname);
 
 	Sistema_MC(int N, double T, double V, double rc);//no se si necesito mas variables
 	~Sistema_MC();

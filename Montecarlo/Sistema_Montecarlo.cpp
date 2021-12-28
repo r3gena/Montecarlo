@@ -9,19 +9,29 @@ Sistema_MC::~Sistema_MC()
 
 Sistema_MC::Sistema_MC(std::string filename)
 {
-	//abro el archivo en cuastion
+	//abro el archivo
+	std::string bin_filename;
 	std::ifstream inputfile(filename, std::ios::in);
-
+	inputfile >> this.N >> this.rho >> this.L >> this.rc;
+  inputfile >> this.T;
+  inputfile >> bin_filename;
 	inputfile.close();
+
+	this.V=this.L*this.L*this.L;
+	this.rc2=this.rc*this.rc;
 	//inicializo los generadores de numeros aleatorios
 	this.int_distribution = std::uniform_int_distribution<int>(0, this.N - 1);
 	this.double_distribution = std::uniform_real_distribution<double>(0, 1);
-	//Para generar las configuraciones ya esta la clase sistema, esta abre lo que le mandes
-
-	//llamo al potencial para calcular la energia correspondiente a l estado inicial
+	std::ifstream binfile(bin_filename, std::ios::binary);
+	binfile.read((char*)rx, this.N*sizeof(double));
+	binfile.read((char*)ry, this.N*sizeof(double));
+	binfile.read((char*)rz, this.N*sizeof(double));
+	binfile.close();
+	//llamo al potencial para calcular la energia correspondiente al estado inicial
+	lennard_jones(this.N, this.rc, this.rc2, this.L, this.V, &this.Ep, &this.dphi, &this.d2phi, this.rx, this.ry, this.rz);
 }
 
-void Sistema_MC::metropolis(int N_steps, std::string binary_name, std::string energy_name)
+void Sistema_MC::metropolis(int N_steps, std::string binary_name, std::string energy_name, std::string barname)
 {
 	double old_E, new_E, deltaE, old_dphi, new_dphi, delta_dphi, old_d2phi, new_d2phi, delta_d2phi;//energias de una sola particula y variacion de energia
 	int n_move;
@@ -30,13 +40,16 @@ void Sistema_MC::metropolis(int N_steps, std::string binary_name, std::string en
 	std::ofstream bin__output(binary_name, std::ios::binary);
 	std::ofstream energy_output(energy_name, std::ios::out);
 
+	//creo la barra de progreso
+	progress_bar bar(barname, N_steps);
+
 	for(int i=0;i<N_steps;i++)
 	{
 	//genero aleatoriamente que particula se mueve y cuanto
 		n_move = this.int_distribution(this.generator);
-		xmovement = this.double_distribution(this.generator) * this->L / 100;
-		ymovement = this.double_distribution(this.generator) * this->L / 100;
-		zmovement = this.double_distribution(this.generator) * this->L / 100;
+		xmovement = this.double_distribution(this.generator) * this.L / 100;
+		ymovement = this.double_distribution(this.generator) * this.L / 100;
+		zmovement = this.double_distribution(this.generator) * this.L / 100;
 
 		//calculamos la diferencia de energia al mover la particula con el potencial de una particula
 		LJ_particula(this.N, n_move, this.rc, this.rc2, this.L, this.V, &old_E, &old_dphi, &old_d2phi, rx, ry, rz);
@@ -72,6 +85,7 @@ void Sistema_MC::metropolis(int N_steps, std::string binary_name, std::string en
 		bin__output.write((char*)rz, this.N*sizeof(double));
 		//energias
 		energy_output << this.Ep << " " << this.dphi << " " << this.d2phi << std::endl;
+		bar.update(i);
 	}
 	//cerramos los archivos
 	bin__output.close()
