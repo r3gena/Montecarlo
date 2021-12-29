@@ -13,7 +13,7 @@ Sistema_MC::Sistema_MC(std::string filename)
 	std::string bin_filename;
 	std::ifstream inputfile(filename, std::ios::in);
 	inputfile >> this->N >> this->rho >> this->L >> this->rc;
-  inputfile >> this->T;
+  inputfile >> this->T >> this-> dr;
   inputfile >> bin_filename;
 	inputfile.close();
 
@@ -43,6 +43,8 @@ void Sistema_MC::metropolis(int N_steps, std::string energy_name, std::string ba
 	int n_move;
 	double xmovement, ymovement, zmovement;
 
+	double aceptadas=0, rechazadas=0;
+
 	std::ofstream energy_output(energy_name, std::ios::out);
 
 	//creo la barra de progreso
@@ -51,16 +53,16 @@ void Sistema_MC::metropolis(int N_steps, std::string energy_name, std::string ba
 	//medias que queremos calcular:
 	double mphi=0;//potencial
 	double mdphi=0, md2phi=0;//primera y segunda derivada
-	double mphi2=0, mdphi2;//potencial y primera derivada al cuadrado
+	double mphi2=0, mdphi2=0;//potencial y primera derivada al cuadrado
 	double mphidphi=0;//potencial por su primera derivada
 
 	for(int i=0;i<N_steps;i++)
 	{
 	//genero aleatoriamente que particula se mueve y cuanto
 		n_move = int_distribution(generator);
-		xmovement = double_distribution(generator) * L / 100;
-		ymovement = double_distribution(generator) * L / 100;
-		zmovement = double_distribution(generator) * L / 100;
+		xmovement = double_distribution(generator) * dr;
+		ymovement = double_distribution(generator) * dr;
+		zmovement = double_distribution(generator) * dr;
 
 		//calculamos la diferencia de energia al mover la particula con el potencial de una particula
 		LJ_particula(N, n_move, rc, rc2, L, V, &old_E, &old_dphi, &old_d2phi, rx, ry, rz);
@@ -81,9 +83,10 @@ void Sistema_MC::metropolis(int N_steps, std::string energy_name, std::string ba
 		if (test_global)
 		{
 			//Se admite, solo hay que actualizar las energias
-			Ep +=deltaE;
-			dphi += delta_dphi;
-			d2phi += delta_d2phi;
+			this->Ep +=deltaE;
+			this->dphi += delta_dphi;
+			this->d2phi += delta_d2phi;
+			aceptadas+=1;
 		}
 		else
 		{
@@ -91,6 +94,7 @@ void Sistema_MC::metropolis(int N_steps, std::string energy_name, std::string ba
 			rx[n_move]-=xmovement;
 			ry[n_move]-=ymovement;
 			rz[n_move]-=zmovement;
+			rechazadas+=1;
 		}
 		//realizar el guardado
 		energy_output << Ep << " " << dphi << " " << d2phi << std::endl;
@@ -98,10 +102,10 @@ void Sistema_MC::metropolis(int N_steps, std::string energy_name, std::string ba
 		//añadimos los valores aceptados a las medias
 		mphi=mphi+Ep;
 		mdphi=mdphi+dphi;
-		mphi2=mphi2+Ep*Ep;
-		mdphi2=mdphi2+dphi*dphi;
+		mphi2=mphi2+(Ep*Ep);
+		mdphi2=mdphi2+(dphi*dphi);
 		md2phi=md2phi+d2phi;
-		mphidphi=mphidphi+Ep*dphi;
+		mphidphi=mphidphi+(Ep*dphi);
 
 		bar.update(i);
 	}
@@ -120,9 +124,17 @@ void Sistema_MC::metropolis(int N_steps, std::string energy_name, std::string ba
 	double p=(N*T/V)-mdphi;
 	double Cv=((3*N-3)/2)+(mphi2-mphi*mphi)/(T*T);
 	double gamma=(V/Cv)*((N/V)+(mphi*mdphi-mphidphi)/(T*T));
-	double inv_kT=(N*T/V)+V*md2phi-(V/T)*(mdphi2-mdphi*mdphi);
+	double inv_kT=(N*T/V)+V*md2phi-(V*(mdphi2-(mdphi*mdphi))/T);
 
 	std::ofstream results_file(results_name, std::ios::app);
 	results_file << p << " " << Cv << " " << gamma << " " << 1/inv_kT << std::endl;
 	results_file.close();
+
+	//comprobacion para ver cuanto porcentaje hay de configuraciones aceptadas y rechazadas
+	aceptadas=aceptadas*100/N_steps;
+	rechazadas=rechazadas*100/N_steps;
+	std::cout << std::endl;
+	std::cout << "Configuraciones aceptadas: " << aceptadas << "%" << std::endl;
+	std::cout << "configuraciones rechazadas: " << rechazadas << "%" << std::endl;
+	std::cout << std::endl;
 }

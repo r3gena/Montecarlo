@@ -118,7 +118,7 @@ void lennard_jones(const int N, const float rc, const float rc2, const float L, 
 			}
 		}
 	}
-	//TODO: correcciones a la energia
+	//correcciones a la energia
 	double f = 3.141592653589793238462 * N * N / (V * rc * rc * rc);
 	ep_corr = 8 * f * (1. / (3 * pow(rc, 6)) - 1) / 3.;
 	dphi_corr = 16 * f * (-2. / (3 * pow(rc, 6)) + 1);
@@ -195,9 +195,14 @@ void LJ_particula(const int N, const int n, const float rc, const float rc2, con
 			*d2phi = *d2phi + (26 * inv_rij12 - 7 * inv_rij6);
 		}
 	}
-	*E_p = *E_p * 4 ;
-	*dphi = *dphi * 24 ;
-	*d2phi = *d2phi * 24 ;
+	double f = 3.141592653589793238462 * N * N / (V * rc * rc * rc);
+	double ep_corr = 8 * f * (1. / (3 * pow(rc, 6)) - 1) / 3.;
+	double dphi_corr = 16 * f * (-2. / (3 * pow(rc, 6)) + 1);
+	double d2phi_corr = 16 * f * (26. / (3 * pow(rc, 6)) - 7);
+
+	*E_p = *E_p * 4 + ep_corr;
+	*dphi = *dphi * 24 + dphi_corr;
+	*d2phi = *d2phi * 24 + d2phi_corr;
 	*d2phi = (*d2phi - *dphi * 2) / (9 * V * V);
 	*dphi = *dphi / (3 * V);
 }

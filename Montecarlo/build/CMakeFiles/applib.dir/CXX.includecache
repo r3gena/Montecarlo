@@ -6,24 +6,6 @@
 
 #IncludeRegexTransform: 
 
-/home/pedro/github/Montecarlo/Montecarlo/Sistema_Montecarlo.cpp
-Sistema_Montecarlo.h
-/home/pedro/github/Montecarlo/Montecarlo/Sistema_Montecarlo.h
-
-/home/pedro/github/Montecarlo/Montecarlo/Sistema_Montecarlo.h
-potenciales.h
-/home/pedro/github/Montecarlo/Montecarlo/potenciales.h
-progress_bar.h
-/home/pedro/github/Montecarlo/Montecarlo/progress_bar.h
-random
--
-ostream
--
-istream
--
-string
--
-
 /home/pedro/github/Montecarlo/Montecarlo/potenciales.cpp
 potenciales.h
 /home/pedro/github/Montecarlo/Montecarlo/potenciales.h
@@ -34,11 +16,5 @@ iostream
 random
 -
 fstream
--
-
-/home/pedro/github/Montecarlo/Montecarlo/progress_bar.h
-iostream
--
-cmath
 -
 

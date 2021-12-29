@@ -11,7 +11,7 @@ class Sistema_MC
 public:
 	int N;
 	double Ep, dphi, d2phi, T;
-	double rc, rc2, L, V, rho;
+	double rc, rc2, L, V, rho, dr;
 
 	//elementos para los numeros aleatorios
 	std::default_random_engine generator;

@@ -2,7 +2,7 @@
 
 progress_bar::progress_bar(std::string name, int max_steps)
 {
-	this->max_steps = max_steps;
+	this->max_steps = max_steps-1;
 	progress = 0;
 	previous_progress = 0;
 	process_name = name;
@@ -13,9 +13,9 @@ progress_bar::progress_bar(std::string name, int max_steps)
 
 progress_bar::~progress_bar()
 {
-	std::cout << "[" << std::string(100, '#') << ']' << "\r";
+	/*std::cout << "[" << std::string(100, '#') << ']' << "\r";
 	std::cout << std::flush;
-	std::cout << "\n" << "\n";
+	std::cout << "\n" << "\n";*/
 }
 
 void progress_bar::update(int current_step)
